@@ -38,18 +38,18 @@
                     </div>
                 </div>
             </div>
-            <div class="container" id="userTable">
+            <div class="container" id="gridCategoria">
                 <!-- aqui o javascript cria a tabela -->
             </div>
             <!-- script para conectar ao servicor da api e chamar o serviço especifico -->
             <script>
-                const apiUrl = 'caminho do servidor da api';
+                const apiUrl = 'http://localhost/PWEB-API/api/categorias/';
 
-                document.getElementById('userForm').addEventListener('submit', function (event) {
+                document.getElementById('frmCategoria').addEventListener('submit', function (event) {
                     event.preventDefault();
                     let nome = document.getElementById('nome').value;
-
-                    fetch(`${apiUrl}icategoria.php?jsn=${JSON.stringify({ nome })}`)
+                    let operacao = 'i';
+                    fetch(`${apiUrl}index.php?json=${JSON.stringify({ op:operacao,nome:nome })}`)
                         .then(response => response.text())
                         .then(() => {
                             alert('Categoria cadastrado!');
@@ -58,19 +58,20 @@
                 });
 
                 function carregarcategorias() {
-                    fetch(`${apiUrl}scategoria.php`)
+                    let operacao = 's';
+                    fetch(`${apiUrl}index.php?json=${JSON.stringify({ op:operacao })}`)
                         .then(response => response.json())
                         .then(data => {
-                            let userTable = document.getElementById('userTable');
-                            userTable.innerHTML = '';
+                            let gridCategoria = document.getElementById('gridCategoria');
+                            gridCategoria.innerHTML = '';
                             data.forEach(ds => {
-                                userTable.innerHTML += `
+                                gridCategoria.innerHTML += `
                             <div class="row mt-2">
-                                <div class="col-sm-3">${ds.catnome}</div>
-                                <div class="col-sm-2">${ds.catativo ? 'Ativo' : 'Inativo'}</div>
+                                <div class="col-sm-3">${ds.nome}</div>
+                                <div class="col-sm-2">${ds.ativo ? 'Ativo' : 'Inativo'}</div>
                                 <div class="col-sm-4">
-                                    <button class="btn btn-warning" onclick="editarcategoria(${ds.catid}, '${ds.catnome}', '${ds.catativo}')">Editar</button>
-                                    <button class="btn btn-danger" onclick="deletarcategoria(${ds.catid}, '${ds.catnome}')">Excluir</button>
+                                    <button class="btn btn-warning" onclick="editarcategoria(${ds.id}, '${ds.nome}', '${ds.ativo}')">Editar</button>
+                                    <button class="btn btn-danger" onclick="deletarcategoria(${ds.id}, '${ds.nome}')">Excluir</button>
                                 </div>
                             </div>`;
                             });
@@ -79,14 +80,15 @@
 
                 function editarcategoria(id, nome, ativo) {
                     document.getElementById('nome').value = nome;
-                    const btn = document.querySelector('#userForm button[type="submit"]');
+                    const btn = document.querySelector('#frmCategoria button[type="submit"]');
                     btn.textContent = 'ATUALIZAR';
                     btn.classList.remove('btn-primary');
                     btn.classList.add('btn-success');
                     btn.onclick = function (event) {
                         event.preventDefault();
                         let unome = document.getElementById('nome').value;
-                        fetch(`${apiUrl}ucategoria.php?jsn=${JSON.stringify({ nome: unome, ativo, id })}`)
+                        let operacao = 'u';
+                        fetch(`${apiUrl}?json=${JSON.stringify({ "op":operacao ,"nome": unome, "ativo":ativo, "id":id })}`)
                             .then(response => response.text())
                             .then(() => {
                                 alert('Categoria alterado!');
@@ -97,15 +99,16 @@
 
                 function deletarcategoria(id, nome) {
                     document.getElementById('nome').value = 'Deseja realmente excluir ' + nome;
-                    const btn = document.querySelector('#userForm button[type="submit"]');
-                    const txt = document.querySelector('#userForm input[type="text"]');
+                    const btn = document.querySelector('#frmCategoria button[type="submit"]');
+                    const txt = document.querySelector('#frmCategoria input[type="text"]');
                     btn.textContent = 'EXCLUIR';
                     btn.classList.remove('btn-primary');
                     btn.classList.add('btn-danger');
                     txt.classList.add('text-danger');
                     btn.onclick = function (event) {
                         event.preventDefault();
-                        fetch(`${apiUrl}dcategoria.php?jsn=${JSON.stringify({ id })}`)
+                        let operacao = 'd';
+                        fetch(`${apiUrl}?json=${JSON.stringify({ "op":operacao,"id":id })}`)
                             .then(response => response.text())
                             .then(() => {
                                 alert('Categoria Excluido!');
