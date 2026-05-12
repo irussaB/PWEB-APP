@@ -8,63 +8,63 @@
     <title>APP Lanchonete</title>
 </head>
 
-  <body>
+<body>
     <div class="container-fluid">
-      <header>
+        <header>
 
-      </header>
-      <main>
+        </header>
+        <main>
             <div class="container mt-4">
-        <h2>Cadastro de Categorias</h2>
-        <form id="userForm">
-            <div class="mb-3">
-                <label for="categoria">Categorias:</label>
-                <input type="text" name="nome" id="nome" class="form-control" require>
+                <h2>Cadastro de Categorias</h2>
+                <form id="frmCategoria">
+                    <div class="mb-3">
+                        <label for="nome">Categorias:</label>
+                        <input type="text" name="nome" id="nome" class="form-control" require>
+                    </div>
+                    <button type="submit" class="btn btn-primary">GRAVAR</button>
+                </form>
             </div>
-            <button type="submit" class="btn btn-primary">GRAVAR</button>
-        </form>
-    </div>
-    <!-- Listagem visual HTML CSS -->
-    <div class="container mt-3">
-        <div class="row">
-            <div class="col-sm-3">
-                <b>Categoria</b>
+            <!-- Listagem visual HTML CSS -->
+            <div class="container mt-3">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <b>Categoria</b>
+                    </div>
+                    <div class="col-sm-2">
+                        <b>Situação</b>
+                    </div>
+                    <div class="col-sm-4">
+                        <b>Operações</b>
+                    </div>
+                </div>
             </div>
-            <div class="col-sm-2">
-                <b>Situação</b>
+            <div class="container" id="userTable">
+                <!-- aqui o javascript cria a tabela -->
             </div>
-            <div class="col-sm-4">
-                <b>Operações</b>
-            </div>
-        </div>
-    </div>
-    <div class="container" id="userTable">
-        <!-- aqui o javascript cria a tabela -->
-    </div>
-    <!-- script para conectar ao servicor da api e chamar o serviço especifico -->
-    <script>
-        const apiUrl = 'caminho do servidor da api';
+            <!-- script para conectar ao servicor da api e chamar o serviço especifico -->
+            <script>
+                const apiUrl = 'caminho do servidor da api';
 
-        document.getElementById('userForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            let nome = document.getElementById('nome').value;
+                document.getElementById('userForm').addEventListener('submit', function (event) {
+                    event.preventDefault();
+                    let nome = document.getElementById('nome').value;
 
-            fetch(`${apiUrl}icategoria.php?jsn=${JSON.stringify({nome})}`)
-                .then(response => response.text())
-                .then(() => {
-                    alert('Categoria cadastrado!');
-                    window.location.reload();
+                    fetch(`${apiUrl}icategoria.php?jsn=${JSON.stringify({ nome })}`)
+                        .then(response => response.text())
+                        .then(() => {
+                            alert('Categoria cadastrado!');
+                            window.location.reload();
+                        });
                 });
-        });
 
-        function carregarcategorias() {
-            fetch(`${apiUrl}scategoria.php`)
-                .then(response => response.json())
-                .then(data => {
-                    let userTable = document.getElementById('userTable');
-                    userTable.innerHTML = '';
-                    data.forEach(ds => {
-                        userTable.innerHTML += `
+                function carregarcategorias() {
+                    fetch(`${apiUrl}scategoria.php`)
+                        .then(response => response.json())
+                        .then(data => {
+                            let userTable = document.getElementById('userTable');
+                            userTable.innerHTML = '';
+                            data.forEach(ds => {
+                                userTable.innerHTML += `
                             <div class="row mt-2">
                                 <div class="col-sm-3">${ds.catnome}</div>
                                 <div class="col-sm-2">${ds.catativo ? 'Ativo' : 'Inativo'}</div>
@@ -73,53 +73,54 @@
                                     <button class="btn btn-danger" onclick="deletarcategoria(${ds.catid}, '${ds.catnome}')">Excluir</button>
                                 </div>
                             </div>`;
-                    });
-                });
-        }
+                            });
+                        });
+                }
 
-        function editarcategoria(id, nome, ativo) {
-            document.getElementById('nome').value = nome;
-            const btn = document.querySelector('#userForm button[type="submit"]');
-            btn.textContent = 'ATUALIZAR';
-            btn.classList.remove('btn-primary');
-            btn.classList.add('btn-success');
-            btn.onclick = function(event) {
-                event.preventDefault();
-                let unome = document.getElementById('nome').value;
-                fetch(`${apiUrl}ucategoria.php?jsn=${JSON.stringify({nome:unome, ativo, id})}`)
-                    .then(response => response.text())
-                    .then(() => {
-                        alert('Categoria alterado!');
-                        window.location.reload();
-                    });
-            }
-        }
+                function editarcategoria(id, nome, ativo) {
+                    document.getElementById('nome').value = nome;
+                    const btn = document.querySelector('#userForm button[type="submit"]');
+                    btn.textContent = 'ATUALIZAR';
+                    btn.classList.remove('btn-primary');
+                    btn.classList.add('btn-success');
+                    btn.onclick = function (event) {
+                        event.preventDefault();
+                        let unome = document.getElementById('nome').value;
+                        fetch(`${apiUrl}ucategoria.php?jsn=${JSON.stringify({ nome: unome, ativo, id })}`)
+                            .then(response => response.text())
+                            .then(() => {
+                                alert('Categoria alterado!');
+                                window.location.reload();
+                            });
+                    }
+                }
 
-        function deletarcategoria(id, nome) {
-            document.getElementById('nome').value = 'Deseja realmente excluir ' + nome;
-            const btn = document.querySelector('#userForm button[type="submit"]');
-            const txt = document.querySelector('#userForm input[type="text"]');
-            btn.textContent = 'EXCLUIR';
-            btn.classList.remove('btn-primary');
-            btn.classList.add('btn-danger');
-            txt.classList.add('text-danger');
-            btn.onclick = function(event) {
-                event.preventDefault();
-                fetch(`${apiUrl}dcategoria.php?jsn=${JSON.stringify({id})}`)
-                    .then(response => response.text())
-                    .then(() => {
-                        alert('Categoria Excluido!');
-                        window.location.reload();
-                    });
-            }
-        }
-        window.onload = carregarcategorias;
-    </script>
-      </main>
-      <footer>
+                function deletarcategoria(id, nome) {
+                    document.getElementById('nome').value = 'Deseja realmente excluir ' + nome;
+                    const btn = document.querySelector('#userForm button[type="submit"]');
+                    const txt = document.querySelector('#userForm input[type="text"]');
+                    btn.textContent = 'EXCLUIR';
+                    btn.classList.remove('btn-primary');
+                    btn.classList.add('btn-danger');
+                    txt.classList.add('text-danger');
+                    btn.onclick = function (event) {
+                        event.preventDefault();
+                        fetch(`${apiUrl}dcategoria.php?jsn=${JSON.stringify({ id })}`)
+                            .then(response => response.text())
+                            .then(() => {
+                                alert('Categoria Excluido!');
+                                window.location.reload();
+                            });
+                    }
+                }
+                window.onload = carregarcategorias;
+            </script>
+        </main>
+        <footer>
 
-      </footer>
+        </footer>
     </div>
     <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-  </body>
+</body>
+
 </html>
