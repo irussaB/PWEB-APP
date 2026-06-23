@@ -25,11 +25,50 @@
                         <input type="text" name="valorvenda" id="valorvenda" class="form-control" require>
                         
                         <label for="nome">Categoria:</label>
-                        <input type="text" name="categoria" id="categoria" class="form-control" require>
-                    
+                        <div class="input-group">
+                            <input type="text" name="categoria" id="categoria" class="form-control" readonly require>
+                            <input type="text" name="catnome" id="catnome" class="form-control" readonly require> 
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Procurar</button>                            
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">GRAVAR</button>
+                    <button class="btn btn-primary" type="submit">GRAVAR</button>
                 </form>
+                  
+                  <!-- Modal -->
+                  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h1 class="modal-title fs-5" id="exampleModalLabel">Seleção de Categorias</h1>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                           <div class="input-group">
+                                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                                <button class="btn btn-outline-success my-2 my-sm-0" onclick="filtraprodutos()">Pesquisar</button>
+                           </div>
+                           <div class="container mt-3">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <b>ID:</b>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <b>Categorias:</b>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="container" id="gridCategoria">
+                                <!-- aqui o javascript cria a tabela -->
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-primary">Save changes</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
             </div>
             <!-- Listagem visual HTML CSS -->
             <div class="container mt-3">
@@ -48,7 +87,7 @@
                     </div>
                 </div>
             </div>
-            <div class="container" id="gridCategoria">
+            <div class="container" id="gridProduto">
                 <!-- aqui o javascript cria a tabela -->
             </div>
             <!-- script para conectar ao servicor da api e chamar o serviço especifico -->
